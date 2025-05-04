@@ -12,7 +12,7 @@ app.use(cors());
 console.log(process.env.MONGO_URI);
 
 
-app.listen(5000, () => {
+app.listen(3200, () => {
     connectDB();
     console.log('Server is running on port 5000');
 } );
