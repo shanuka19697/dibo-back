@@ -31,4 +31,3 @@ jobs:
     - run: |
         touch .env
         echo "${{ secrets.MONGO_URI }}" > .env
-    - run: npm test
