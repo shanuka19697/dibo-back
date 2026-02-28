@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import mongoose from 'mongoose';
 import { connectDB } from './config/db.js';
 import StData from './models/sData.model.js';
 
@@ -10,18 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let isConnected = false;
-
-async function dbConnectOnce() {
-  if (!isConnected) {
-    await connectDB();
-    isConnected = true;
-  }
-}
+// Connect to Database
+connectDB();
 
 /* GET */
 app.get('/api/student-data', async (req, res) => {
-  await dbConnectOnce();
   try {
     const studentData = await StData.find();
     res.status(200).json({ success: true, data: studentData });
@@ -32,7 +26,6 @@ app.get('/api/student-data', async (req, res) => {
 
 /* POST */
 app.post('/api/student-data', async (req, res) => {
-  await dbConnectOnce();
   try {
     const newStudentData = new StData(req.body);
     await newStudentData.save();
@@ -44,7 +37,6 @@ app.post('/api/student-data', async (req, res) => {
 
 /* DELETE */
 app.delete('/api/student-data/:id', async (req, res) => {
-  await dbConnectOnce();
   try {
     await StData.findByIdAndDelete(req.params.id);
     res.json({ success: true });
@@ -55,7 +47,6 @@ app.delete('/api/student-data/:id', async (req, res) => {
 
 /* PUT */
 app.put('/api/student-data/:id', async (req, res) => {
-  await dbConnectOnce();
   try {
     const updated = await StData.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json({ success: true, data: updated });
@@ -64,9 +55,10 @@ app.put('/api/student-data/:id', async (req, res) => {
   }
 });
 
-/* EXPORT FOR VERCEL */
-export default app;
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server started at http://localhost:${PORT}`);
 });
+
+/* EXPORT FOR VERCEL */
+export default app;
