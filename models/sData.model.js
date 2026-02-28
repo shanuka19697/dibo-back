@@ -15,6 +15,10 @@ const sDataSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    StudentPhoto: {
+      type: String,
+      required: true,
+    },
     Class: {
       type: String,
       required: true,
@@ -47,6 +51,10 @@ const sDataSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    // StudentPhotoUrl: {
+    //   type: String,
+    //   required: true,
+    // },
   },
   {
     timestamps: true,
