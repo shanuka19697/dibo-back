@@ -8,13 +8,20 @@ import StData from './models/sData.model.js';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Only allow requests from your Cloudflare Pages frontend
+app.use(cors({
+  origin: 'https://dibo-front.pages.dev', // replace with your actual Pages URL
+  methods: ['GET','POST','PUT','DELETE'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Connect to Database
 connectDB();
 
-/* GET */
+// Routes (GET, POST, PUT, DELETE remain the same)
 app.get('/api/student-data', async (req, res) => {
   try {
     const studentData = await StData.find();
@@ -24,7 +31,6 @@ app.get('/api/student-data', async (req, res) => {
   }
 });
 
-/* POST */
 app.post('/api/student-data', async (req, res) => {
   try {
     const newStudentData = new StData(req.body);
@@ -35,7 +41,6 @@ app.post('/api/student-data', async (req, res) => {
   }
 });
 
-/* DELETE */
 app.delete('/api/student-data/:id', async (req, res) => {
   try {
     await StData.findByIdAndDelete(req.params.id);
@@ -45,7 +50,6 @@ app.delete('/api/student-data/:id', async (req, res) => {
   }
 });
 
-/* PUT */
 app.put('/api/student-data/:id', async (req, res) => {
   try {
     const updated = await StData.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -60,5 +64,4 @@ app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}`);
 });
 
-/* EXPORT FOR VERCEL */
 export default app;
